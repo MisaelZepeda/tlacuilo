@@ -43,3 +43,28 @@ export function gastoDelDia(v4, fecha) {
         .filter(t => t.tipo === 'gasto' && t.fecha === fecha && !t.paraTercero)
         .reduce((a, t) => a + (Number(t.monto) || 0), 0));
 }
+
+// ¿Ya se cubrió en Morralla lo que originó un pendiente? (clave de pendientesDeDinero)
+//   pago:<cuentaId>:<fechaLímite>   → el estado de esa tarjeta ya está pagado
+//   rec:<recurrenteId>:<fecha>      → el pago fijo ya se registró (su próxima fecha avanzó)
+//   cobro:<nombre>:<fecha>          → esa persona ya abonó esa mensualidad (o ya saldó)
+export function pagoCubierto(clave, v4, hoy = new Date()) {
+    const [tipo, ...resto] = String(clave || '').split(':');
+    const fecha = resto[resto.length - 1];
+    const ref = resto.slice(0, -1).join(':');
+    const d = datosMorralla(v4);
+    if (tipo === 'rec') {
+        const r = d.recurrentes.find(x => x.id === ref);
+        return !!r && (r.activo === false || (r.proximaFecha || '') > fecha);
+    }
+    if (tipo === 'cobro') {
+        const deuda = deudasTerceros(d.cuentas, d.transacciones, hoy).find(x => x.nombre.toLowerCase() === ref.toLowerCase());
+        return !deuda || deuda.saldada || (deuda.proximo && deuda.proximo.fecha > fecha);
+    }
+    if (tipo === 'pago') {
+        const mes = fecha.slice(0, 7);
+        const ev = [sumarMeses(mes, -1), mes].flatMap(k => eventosMes(k, d, hoy)).find(e => e.tipo === 'pago' && e.cuentaId === ref && e.fecha === fecha);
+        return !!ev?.pagado;
+    }
+    return false;
+}

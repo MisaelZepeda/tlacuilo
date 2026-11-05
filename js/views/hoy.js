@@ -16,6 +16,7 @@ import { pendientesDeDinero, gastoDelDia } from '../domain/finanzas.js';
 import { eventosEnRango } from '../domain/calendario.js';
 import { abrirEvento, COLORES_EVENTO } from '../components/evento-form.js';
 import { hoyISO, sumarDias } from '../domain/fechas.js';
+import { interpretarPendiente, describirCuando } from '../domain/dictado.js';
 
 export const MORRALLA_URL = 'https://misaelzepeda.github.io/financiapp/';
 
@@ -108,7 +109,7 @@ export function render() {
     const hechasHoy = g.hechas.filter(t => t.hechaEn && hoyISO(new Date(t.hechaEn)) === hoyISO());
     const nadaHoy = !g.hoy.length && !g.atrasadas.length;
     return `<div class="hoy-cabeza"><div class="hoy-saludo">${saludo()}</div><div class="hoy-fecha">${fechaLargaHoy()}</div></div>
-        <form class="rapido" data-submit="rapido"><input name="titulo" placeholder="Agregar pendiente para hoy…" autocomplete="off" aria-label="Nuevo pendiente para hoy">
+        <form class="rapido" data-submit="rapido"><input name="titulo" placeholder="Agregar: dentista mañana a las 5…" autocomplete="off" aria-label="Nuevo pendiente para hoy">
             <button class="btn btn-primary" type="submit" aria-label="Agregar">${icon('plus')}</button></form>
         ${tecoHTML()}
         ${agendaHTML(conHora)}
@@ -126,8 +127,12 @@ on('rapido', async (form) => {
     const titulo = form.elements.titulo.value.trim();
     if (!titulo) return;
     form.elements.titulo.value = '';
-    await guardarTarea({ titulo, fecha: hoyISO(), prioridad: 0, hecha: false });
-    toast('Agregado para hoy');
+    // Captura inteligente: "dentista mañana a las 5" → con fecha y hora (sin fecha, para hoy).
+    const ahora = new Date().toTimeString().slice(0, 5);
+    const p = interpretarPendiente(titulo, hoyISO(), ahora) || { titulo, fecha: null, hora: null };
+    const fecha = p.fecha || hoyISO();
+    await guardarTarea({ titulo: p.titulo, fecha, hora: p.hora || null, prioridad: 0, hecha: false });
+    toast(fecha === hoyISO() && !p.hora ? 'Agregado para hoy' : `Agregado: ${describirCuando(fecha, p.hora, hoyISO())}`);
     document.querySelector('.rapido input')?.focus();
 }, 'submit');
 

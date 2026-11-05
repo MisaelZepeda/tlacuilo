@@ -98,3 +98,20 @@ export function resumenDia(tareas, hoy = new Date()) {
     const hechasHoy = g.hechas.filter(t => t.hechaEn && hoyISO(new Date(t.hechaEn)) === h).length;
     return { atrasadas: g.atrasadas.length, hoy: g.hoy.length, hechasHoy, manana: g.manana.length, sinFecha: g.sinFecha.length, total: tareas.filter(t => !t.hecha).length };
 }
+
+// ---------- Posponer ----------
+// 'manana' → mañana; 'semana' → el lunes que viene; 'sinfecha' → sin fecha (Algún día).
+export function fechaPospuesta(opcion, hoy = new Date()) {
+    const h = hoyISO(hoy);
+    if (opcion === 'hoy') return h;
+    if (opcion === 'manana') return sumarDias(h, 1);
+    if (opcion === 'semana') { const dow = hoy.getDay(); return sumarDias(h, ((8 - dow) % 7) || 7); }
+    return null;
+}
+
+// Avance del día: lo hecho hoy contra lo que tocaba hoy (hecho + por hacer + atrasado).
+export function avanceDia(tareas, hoy = new Date()) {
+    const r = resumenDia(tareas, hoy);
+    const total = r.hechasHoy + r.hoy + r.atrasadas;
+    return { hechas: r.hechasHoy, total, fraccion: total ? r.hechasHoy / total : 0, completo: total > 0 && r.hechasHoy === total };
+}

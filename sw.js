@@ -1,6 +1,6 @@
 // Service worker de Tlacuilo: la app funciona sin conexión con la versión instalada
 // y avisa cuando hay una nueva (SKIP_WAITING desde la app).
-const CACHE_NAME = 'tlacuilo-cache-v8'; // v8: Registros se llama Notas
+const CACHE_NAME = 'tlacuilo-cache-v9'; // v9: captura inteligente en Hoy
 
 const urlsToCache = [
     './',

@@ -219,3 +219,18 @@ test('listas: elementos, avance, conversión y dictado', () => {
     assert.deepEqual(lineasALista(listaATexto(lineasALista('Leche\n✓ Pan'))), [{ texto: 'Leche', hecho: false }, { texto: 'Pan', hecho: true }]);
     assert.deepEqual(dictadoALista('leche, huevo y pan dulce'), ['Leche', 'Huevo', 'Pan dulce']);
 });
+
+// ---------- Mejoras: posponer, avance y pagos cubiertos ----------
+import { fechaPospuesta, avanceDia } from '../js/domain/tareas.js';
+import { pagoCubierto } from '../js/domain/finanzas.js';
+
+test('posponer, avance del día y pagos de Morralla cubiertos', () => {
+    assert.equal(fechaPospuesta('manana', HOY), '2026-11-06');
+    assert.equal(fechaPospuesta('semana', HOY), '2026-11-09');
+    assert.equal(fechaPospuesta('sinfecha', HOY), null);
+    const a = avanceDia([{ fecha: '2026-11-05', hecha: true, hechaEn: HOY.getTime() }, { fecha: '2026-11-05', hecha: false }], HOY);
+    assert.deepEqual([a.hechas, a.total, a.completo], [1, 2, false]);
+    const v4 = { recurrentes: { n: { proximaFecha: '2026-12-05', activo: true } } };
+    assert.equal(pagoCubierto('rec:n:2026-11-05', v4, HOY), true);
+    assert.equal(pagoCubierto('rec:n:2026-12-05', v4, HOY), false);
+});
