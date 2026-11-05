@@ -5,10 +5,10 @@ import { on } from '../core/eventos.js';
 import { icon } from '../lib/icons.js';
 import { escapeHtml } from '../lib/format.js';
 import { vacioTecoHTML } from '../components/piezas.js';
-import { TIPOS_NOTA, tituloNota, resumenNota, etiquetasDe, etiquetasUsadas, filtrarNotas } from '../domain/notas.js';
+import { TIPOS_NOTA, tituloNota, resumenNota, etiquetasDe, etiquetasUsadas, filtrarNotas, itemsDe } from '../domain/notas.js';
 import { hoyISO, diasEntre } from '../domain/fechas.js';
 
-const FILTROS = { todas: 'Todas', fijadas: 'Fijadas', nota: 'Notas', apunte: 'Apuntes', transcripcion: 'Transcripciones' };
+const FILTROS = { todas: 'Todas', fijadas: 'Fijadas', lista: 'Listas', nota: 'Notas', apunte: 'Apuntes', transcripcion: 'Transcripciones' };
 const f = { tipo: 'todas', etiqueta: '', q: '' };
 
 export const titulo = () => ({ titulo: 'Registros' });
@@ -24,13 +24,22 @@ export function cuandoNota(n) {
     return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined }).replace('.', '');
 }
 
+// Primeros elementos de una lista, con los marcados tachados, y su avance.
+function listaPreviaHTML(n) {
+    const items = itemsDe(n).filter(x => x.texto.trim());
+    if (!items.length) return '';
+    return `<ul class="nota-lista">${items.slice(0, 5).map(x => `<li class="${x.hecho ? 'hecho' : ''}">${escapeHtml(x.texto)}</li>`).join('')}</ul>
+        ${items.length > 5 ? `<span class="hint">y ${items.length - 5} más</span>` : ''}
+        <span class="nota-avance">${escapeHtml(resumenNota(n))}</span>`;
+}
+
 export function notaCardHTML(n) {
     const t = TIPOS_NOTA[n.tipo] || TIPOS_NOTA.nota;
     const etiquetas = etiquetasDe(n).slice(0, 3);
     return `<a class="nota-card ${n.fijada ? 'fijada' : ''}" href="#/registro/${encodeURIComponent(n.id)}">
         <div class="nota-cab"><span class="nota-tipo">${icon(t.icono)}${t.nombre}</span>${n.fijada ? `<span class="nota-pin">${icon('star')}</span>` : ''}</div>
         <b class="nota-titulo">${escapeHtml(tituloNota(n))}</b>
-        ${resumenNota(n) ? `<p class="nota-resumen">${escapeHtml(resumenNota(n))}</p>` : ''}
+        ${n.tipo === 'lista' ? listaPreviaHTML(n) : resumenNota(n) ? `<p class="nota-resumen">${escapeHtml(resumenNota(n))}</p>` : ''}
         <div class="nota-pie"><span>${escapeHtml(cuandoNota(n))}</span>${etiquetas.map(e => `<span class="nota-tag">#${escapeHtml(e)}</span>`).join('')}</div>
     </a>`;
 }
@@ -45,7 +54,8 @@ function listaHTML() {
 export function render() {
     const etiquetas = etiquetasUsadas(sel.notas());
     return `<div class="notas-acciones">
-            <a class="btn btn-primary" href="#/registro/nuevo">${icon('plus')}Nueva nota</a>
+            <a class="btn btn-primary" href="#/registro/nuevo">${icon('plus')}Nota</a>
+            <a class="btn btn-soft" href="#/registro/nuevo?tipo=lista">${icon('check-circle')}Lista</a>
             <a class="btn btn-soft" href="#/registro/nuevo?tipo=transcripcion&dictar=1">${icon('sparkle')}Dictar</a>
         </div>
         <div class="search" style="margin-bottom:10px;"><span>${icon('search')}</span><input type="search" placeholder="Buscar en tus registros" value="${escapeHtml(f.q)}" data-input="rBuscar" aria-label="Buscar registros"></div>

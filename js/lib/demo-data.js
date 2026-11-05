@@ -57,6 +57,9 @@ export function construirDemo(hoy = new Date()) {
         n1: { tipo: 'apunte', titulo: 'Junta de planeación', contenido: 'Objetivos del trimestre:\n- Cerrar el reporte antes del 15\n- Revisar presupuesto con finanzas\n- Contratar a una persona para soporte\n#trabajo #q4', fecha: h, creadoEn: hace(3), editadoEn: hace(2), fijada: true },
         n2: { tipo: 'nota', titulo: '', contenido: 'Regalos de Navidad\nMamá: libro de cocina\nPepe: audífonos\nLaura: planta #navidad', fecha: d(-1), creadoEn: hace(26), editadoEn: hace(25) },
         n3: { tipo: 'transcripcion', titulo: 'Idea en el coche', contenido: 'Podría organizar los pendientes de la casa por cuarto y hacer uno distinto cada sábado. Así no se junta todo el fin de mes.', fecha: d(-3), creadoEn: hace(72), editadoEn: hace(72) },
+        n5: { tipo: 'lista', titulo: 'Súper del sábado', contenido: '', fecha: h, creadoEn: hace(5), editadoEn: hace(1), items: {
+            a: { texto: 'Leche', hecho: true, orden: 0 }, b: { texto: 'Huevo', hecho: true, orden: 1 }, c: { texto: 'Pan integral', hecho: false, orden: 2 },
+            d: { texto: 'Café', hecho: false, orden: 3 }, e: { texto: 'Plátanos', hecho: false, orden: 4 }, f: { texto: 'Detergente', hecho: false, orden: 5 } } },
         n4: { tipo: 'nota', titulo: 'Contraseña del wifi de la oficina', contenido: 'Pedírsela a Carlos, no la tengo anotada.', fecha: d(-6), creadoEn: hace(150), editadoEn: hace(150) },
     };
     return { agenda: { meta: { version: 1, origen: 'demo' }, ajustes: {}, listas, tareas, eventos, notas }, v4 };

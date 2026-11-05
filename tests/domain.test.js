@@ -201,3 +201,21 @@ test('avisos: pendiente a su hora, evento 15 min antes, resumen y vistazo a mañ
     assert.equal(porId['manana:2026-11-06'].at, momento('2026-11-05', '21:00'));
     assert.ok(a.every((x, i) => i === 0 || a[i - 1].at <= x.at));
 });
+
+// ---------- Listas que se marcan ----------
+import { itemsDe, progresoLista, lineasALista, listaATexto, dictadoALista } from '../js/domain/notas.js';
+
+test('listas: elementos, avance, conversión y dictado', () => {
+    const n = { tipo: 'lista', items: { b: { texto: 'Huevo', hecho: true, orden: 1 }, a: { texto: 'Leche', hecho: false, orden: 0 }, c: { texto: '  ', orden: 2 } } };
+    assert.deepEqual(itemsDe(n).map(x => x.texto), ['Leche', 'Huevo', '  ']);
+    assert.deepEqual(progresoLista(n), { hechos: 1, total: 2 });
+    assert.equal(tituloNota(n), 'Leche');
+    assert.equal(resumenNota(n), '1 de 2 marcados');
+    assert.deepEqual(filtrarNotas([{ ...n, id: 'x' }], { q: 'huevo' }).map(x => x.id), ['x']);
+    assert.deepEqual(lineasALista('- Leche\n[x] Huevo\n✓ Pan\n\n* [ ] Café'), [
+        { texto: 'Leche', hecho: false }, { texto: 'Huevo', hecho: true }, { texto: 'Pan', hecho: true }, { texto: 'Café', hecho: false },
+    ]);
+    assert.equal(listaATexto([{ texto: 'Leche', hecho: false }, { texto: 'Pan', hecho: true }, { texto: ' ', hecho: false }]), 'Leche\n✓ Pan');
+    assert.deepEqual(lineasALista(listaATexto(lineasALista('Leche\n✓ Pan'))), [{ texto: 'Leche', hecho: false }, { texto: 'Pan', hecho: true }]);
+    assert.deepEqual(dictadoALista('leche, huevo y pan dulce'), ['Leche', 'Huevo', 'Pan dulce']);
+});

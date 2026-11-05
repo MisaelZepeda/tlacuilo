@@ -251,3 +251,27 @@
 .botones-fila { display: flex; gap: 8px; flex-wrap: wrap; }
 .siri ol.pasos[start] { margin-top: 4px; }
 .dinero-pie.solo { margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* ---------- Listas con casillas ---------- */
+.checklist { background: var(--surface); box-shadow: 0 0 0 1px var(--line); border-radius: var(--r-lg); padding: 6px 10px; }
+.ck-item, .ck-nuevo { display: flex; align-items: center; gap: 10px; min-height: 46px; }
+.ck-item + .ck-item, .ck-item + .ck-nuevo { border-top: 1px solid var(--line); }
+.ck-check { width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--line-strong); background: transparent; display: grid; place-items: center; flex-shrink: 0; cursor: pointer; color: transparent; padding: 0; transition: all var(--t-fast) var(--ease); }
+.ck-check .icon { width: 15px; height: 15px; }
+.ck-item.hecho .ck-check { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.ck-texto, .ck-nuevo input { flex: 1; min-width: 0; background: transparent !important; border: 0 !important; height: 42px !important; padding: 0 !important; font-size: 16px; }
+.ck-item.hecho .ck-texto { text-decoration: line-through; color: var(--muted); }
+.ck-quitar { width: 32px; height: 32px; color: var(--muted); opacity: .6; }
+.ck-nuevo span { width: 24px; display: grid; place-items: center; color: var(--muted); flex-shrink: 0; }
+.ck-nuevo span .icon { width: 18px; height: 18px; }
+.ck-acciones { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 8px 2px 4px; border-top: 1px solid var(--line); }
+.ck-acciones .hint { flex: 1; margin: 0; }
+.ck-acciones .link { font-size: 13.5px; }
+.link.neg { color: var(--neg); }
+.nota-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 13.5px; color: var(--text-2); }
+.nota-lista li { position: relative; padding-left: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nota-lista li::before { content: ''; position: absolute; left: 0; top: 3px; width: 12px; height: 12px; border-radius: 4px; border: 1.6px solid var(--line-strong); }
+.nota-lista li.hecho { text-decoration: line-through; color: var(--muted); }
+.nota-lista li.hecho::before { background: var(--accent); border-color: var(--accent); }
+.nota-avance { font-size: 12px; font-weight: 600; color: var(--accent-ink); }
+.notas-acciones .btn { padding: 0 10px; }
