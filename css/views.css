@@ -1,0 +1,152 @@
+/* ==========================================================================
+   VISTAS — estilos propios de las pantallas de Tlacuilo
+   ========================================================================== */
+
+.rot180 { transform: rotate(180deg); }
+.cent { font-size: 0.55em; color: var(--muted); letter-spacing: 0; }
+.nowrap { white-space: nowrap; }
+
+/* ---------- Carga (Teco + consejo) ---------- */
+.cargando { position: fixed; inset: 0; z-index: 300; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 24px; }
+.cargando-centro { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.cargando-marca { font-family: var(--font-display); font-weight: 800; font-size: 34px; letter-spacing: -0.04em; margin-top: 4px; }
+.cargando-barra { width: 120px; height: 4px; border-radius: 4px; background: var(--surface-2); overflow: hidden; margin-top: 10px; }
+.cargando-barra i { display: block; width: 40%; height: 100%; background: var(--accent); animation: cargar 1s infinite var(--ease); }
+@keyframes cargar { from { transform: translateX(-100%); } to { transform: translateX(260%); } }
+.cargando-consejo { width: 100%; max-width: 380px; background: var(--surface); border-radius: 22px; padding: 16px 18px 18px; box-shadow: 0 0 0 1px var(--line); }
+.cargando-consejo p:last-child { font-size: 16px; line-height: 1.45; }
+.cargando-etiqueta { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: var(--accent-ink); margin-bottom: 6px; }
+
+/* ---------- Teco: animaciones suaves ---------- */
+.teco { overflow: visible; flex-shrink: 0; }
+.teco-animado .teco-cuerpo { animation: tecoRespira 3.4s ease-in-out infinite; transform-origin: 100px 214px; }
+.teco-animado .teco-ojos { animation: tecoParpadea 5s infinite; transform-origin: 100px 100px; }
+.teco-animado.teco-celebrando .teco-cuerpo { animation: tecoBrinca 0.9s ease-in-out infinite; }
+.teco-animado .teco-brillo { animation: tecoBrillo 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.teco-animado .teco-zzz text { animation: tecoZzz 2.4s ease-in-out infinite; }
+.teco-animado .teco-zzz text:nth-child(2) { animation-delay: .4s; }
+.teco-animado .teco-zzz text:nth-child(3) { animation-delay: .8s; }
+@keyframes tecoRespira { 0%, 100% { transform: translateY(0) scale(1, 1); } 50% { transform: translateY(-3px) scale(1.01, 0.99); } }
+@keyframes tecoBrinca { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes tecoParpadea { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
+@keyframes tecoBrillo { 0%, 100% { opacity: 0.4; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } }
+@keyframes tecoZzz { 0%, 100% { opacity: .2; transform: translateY(4px); } 50% { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .teco-animado * { animation: none !important; } }
+
+/* ---------- Acceso ---------- */
+.acceso { min-height: 100vh; display: flex; }
+.acc-panel { flex: 1; display: flex; flex-direction: column; padding: 28px 22px; }
+.acc-form { width: 100%; max-width: 380px; margin: auto; padding: 32px 0; }
+.acc-form h2 { font-size: 30px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 6px; }
+.acc-lede { color: var(--muted); margin-bottom: 26px; font-size: 15px; }
+.acc-pie { text-align: center; margin-top: 22px; color: var(--muted); font-size: 14px; }
+.acc-teco { display: flex; justify-content: center; margin-bottom: 8px; }
+.acc-lado { display: none; }
+@media (min-width: 960px) {
+    .acc-lado { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 22px; padding: 64px; background: var(--surface); border-left: 1px solid var(--line); }
+    .acc-teco { display: none; }
+}
+.acc-eyebrow { color: var(--accent-ink); font-weight: 600; font-size: 14px; }
+.acc-lado h1 { font-size: 38px; letter-spacing: -0.035em; line-height: 1.1; max-width: 460px; }
+.acc-lado ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; color: var(--text-2); }
+.acc-lado li { display: flex; gap: 10px; align-items: center; }
+.acc-lado li .icon { color: var(--accent-ink); width: 20px; height: 20px; }
+
+.top-title h1, .seccion-head h2, .acc-form h2, .acc-lado h1, .brand, .hoja-head h3, .hoy-saludo { font-family: var(--font-display); letter-spacing: -0.025em; }
+.brand img { border-radius: 9px; }
+.seg-tema button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 8px; }
+.seg-tema .icon { width: 15px; height: 15px; }
+
+/* ---------- Hoy ---------- */
+.hoy-cabeza { margin: 2px 2px 14px; }
+.hoy-saludo { font-size: 26px; font-weight: 700; }
+.hoy-fecha { color: var(--muted); font-size: 14px; margin-top: 2px; }
+.rapido { display: flex; gap: 8px; margin-bottom: 14px; }
+.rapido input { flex: 1; height: 48px; border-radius: var(--r-lg); background: var(--surface); box-shadow: 0 0 0 1px var(--line); }
+.rapido .btn { height: 48px; width: 48px; padding: 0; justify-content: center; flex-shrink: 0; }
+
+.teco-card { width: 100%; display: flex; align-items: center; gap: 10px; text-align: left; padding: 10px 16px 10px 6px; margin-bottom: 14px; border-radius: var(--r-xl); background: color-mix(in srgb, var(--accent) 9%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent); color: var(--text); cursor: pointer; border: 0; }
+.teco-card-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.teco-card-msg { font-size: 15px; line-height: 1.4; }
+.teco-card-consejo { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.teco-card-consejo b { color: var(--accent-ink); }
+
+.seccion-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 18px 4px 8px; }
+.seccion-head h2 { font-size: 18px; }
+.seccion-head .link { font-size: 13.5px; }
+
+/* Agenda con hora: línea de tiempo */
+.agenda { display: flex; flex-direction: column; }
+.agenda-item { display: grid; grid-template-columns: 54px 1fr; gap: 10px; align-items: stretch; }
+.agenda-hora { font-family: var(--font-num); font-weight: 600; font-size: 14px; color: var(--muted); padding-top: 13px; text-align: right; }
+.agenda-item.pasada .agenda-hora { opacity: .6; }
+.agenda-item .tarea { border-left: 3px solid var(--accent); padding-left: 12px; }
+
+/* Dinero (Morralla) */
+.dinero { display: flex; flex-direction: column; }
+.dinero-fila { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+.dinero-fila + .dinero-fila { border-top: 1px solid var(--line); }
+.dinero-fila .fila-body { flex: 1; min-width: 0; }
+.dinero-pie { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--muted); }
+.dinero-pie b { color: var(--text); font-family: var(--font-num); }
+.vencido { color: var(--neg); font-weight: 600; }
+
+/* ---------- Pendiente (fila) ---------- */
+.tarea { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; min-width: 0; }
+.lista-tareas > .tarea + .tarea, .agenda-item + .agenda-item .tarea { border-top: 1px solid var(--line); }
+.card-flush .lista-tareas > .tarea { padding-left: 16px; padding-right: 16px; }
+.check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line-strong); background: transparent; display: grid; place-items: center; flex-shrink: 0; cursor: pointer; margin-top: 1px; color: transparent; transition: all var(--t-fast) var(--ease); padding: 0; }
+.check .icon { width: 15px; height: 15px; }
+.check.p3 { border-color: var(--neg); }
+.check.p2 { border-color: var(--warn); }
+.check.p1 { border-color: var(--info); }
+.check:hover { border-color: var(--accent); color: color-mix(in srgb, var(--accent) 50%, transparent); }
+.tarea.hecha .check { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.tarea-body { flex: 1; min-width: 0; cursor: pointer; }
+.tarea-titulo { font-size: 15.5px; line-height: 1.35; overflow-wrap: anywhere; }
+.tarea.hecha .tarea-titulo { text-decoration: line-through; color: var(--muted); }
+.tarea-meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 3px; font-size: 12.5px; color: var(--muted); }
+.tarea-meta span { display: inline-flex; align-items: center; gap: 3px; }
+.tarea-meta .icon { width: 13px; height: 13px; }
+.tarea-meta .atrasada { color: var(--neg); font-weight: 600; }
+.tarea-meta .hoy { color: var(--accent-ink); font-weight: 600; }
+.chip-lista { display: inline-flex; align-items: center; gap: 4px; }
+.punto { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--accent)); display: inline-block; }
+
+/* ---------- Pendientes (pantalla) ---------- */
+.vistas { margin-bottom: 12px; }
+.grupo-titulo { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px 2px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.grupo-titulo.atrasadas { color: var(--neg); }
+.vacio-teco { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 24px 12px; color: var(--muted); }
+.vacio-teco b { color: var(--text); font-size: 16px; }
+
+/* ---------- Formulario de pendiente ---------- */
+.tf-titulo { font-size: 18px !important; font-weight: 600; height: 52px !important; }
+.tf-nota { min-height: 64px; resize: vertical; }
+.tf-fila { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.subtareas { display: flex; flex-direction: column; gap: 6px; }
+.subtarea { display: flex; align-items: center; gap: 10px; }
+.subtarea .check { width: 22px; height: 22px; }
+.subtarea input { flex: 1; height: 38px; }
+.subtarea.hecha input { text-decoration: line-through; color: var(--muted); }
+.subtarea .icon-btn { width: 34px; height: 34px; }
+
+/* ---------- Ajustes ---------- */
+.ajustes { display: flex; flex-direction: column; gap: 14px; }
+.lista-fila { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+.lista-fila + .lista-fila { border-top: 1px solid var(--line); }
+.lista-fila input { flex: 1; height: 40px; }
+.colores { display: flex; gap: 6px; }
+.color { width: 24px; height: 24px; border-radius: 50%; background: var(--c); border: 2px solid transparent; cursor: pointer; padding: 0; }
+.color.activo { border-color: var(--text); }
+.morralla-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+.morralla-link img { width: 42px; height: 42px; border-radius: 12px; }
+.morralla-link div { flex: 1; }
+.morralla-link small { display: block; color: var(--muted); font-size: 13px; }
+.search { display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 14px; border-radius: var(--r-full); background: var(--surface); color: var(--muted); }
+.search:focus-within { box-shadow: 0 0 0 2px var(--accent); }
+.search .icon { width: 18px; height: 18px; }
+.search input { background: none !important; border: 0 !important; height: 100% !important; padding: 0 !important; }
+.search:not(:focus-within) { box-shadow: 0 0 0 1px var(--line); }
+.prio-1 { color: var(--info); } .prio-2 { color: var(--warn); } .prio-3 { color: var(--neg); }
+.chip.activo .prio { color: var(--on-accent); }

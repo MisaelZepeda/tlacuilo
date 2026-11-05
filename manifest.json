@@ -1,0 +1,15 @@
+{
+  "name": "Tlacuilo",
+  "short_name": "Tlacuilo",
+  "description": "Agenda, pendientes y notas, junto a tus finanzas de Morralla.",
+  "start_url": "./#/hoy",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5fa",
+  "theme_color": "#5b3df5",
+  "lang": "es-MX",
+  "icons": [
+    { "src": "icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

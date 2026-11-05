@@ -1,0 +1,30 @@
+# Tlacuilo
+
+*El que escribe y recuerda.* Agenda, pendientes y notas personales, hermana de
+[Morralla](https://github.com/MisaelZepeda/financiapp). Teco, el tecolote, te recuerda
+lo que toca y te da consejos de organización.
+
+**App:** https://misaelzepeda.github.io/tlacuilo/
+
+## Cómo se conecta con Morralla
+
+- Usa el mismo proyecto de Firebase y la misma cuenta: entras con tu usuario de Morralla.
+- Sus datos viven aparte, en `Usuarios/{uid}/agenda`.
+- Lee `Usuarios/{uid}/v4` (Morralla) **solo para mostrar**: qué tarjeta vence, pagos fijos,
+  cobros de "Te deben" y lo gastado en el día. Nunca escribe ahí.
+- Los cálculos de pagos son copias de los de Morralla en `js/domain/morralla/`. Si cambian
+  allá, se copian de nuevo.
+
+## Estructura
+
+- `js/domain/`: lógica pura con pruebas (`npm test`): pendientes, Teco y lo que se lee de Morralla.
+- `js/core/`: datos (Firebase o demo), estado, acciones, rutas y eventos.
+- `js/views/` y `js/components/`: pantallas y piezas de interfaz.
+- `sw.js`: funciona sin conexión; al publicar se sube `CACHE_NAME` para que aparezca el aviso de actualización.
+
+## Fases
+
+1. **Base, Hoy y Pendientes** (listas, fecha y hora, prioridad, subtareas, repetición).
+2. Calendario con capas de Morralla (pagos y gasto por día).
+3. Registros: notas, apuntes y transcripciones.
+4. Avisos en el iPhone y Siri.

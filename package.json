@@ -1,0 +1,10 @@
+{
+  "name": "tlacuilo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tlacuilo: agenda, pendientes y notas personales, conectado a Morralla.",
+  "scripts": {
+    "test": "node --test \"tests/*.test.js\""
+  }
+}
