@@ -9,6 +9,8 @@ import { tareaHTML, vacioTecoHTML } from '../components/piezas.js';
 import { abrirEvento, abrirNuevo, COLORES_EVENTO } from '../components/evento-form.js';
 import { eventosEnRango, dineroEnRango, cuadriculaMes, inicioSemana, nivelesGasto } from '../domain/calendario.js';
 import { hoyISO, sumarDias, sumarMeses, ultimoDiaMes } from '../domain/fechas.js';
+import { notasDelDia } from '../domain/notas.js';
+import { notaCardHTML } from './registros.js';
 
 const VISTAS = { mes: 'Mes', semana: 'Semana', dia: 'Día' };
 const CAPAS = { eventos: 'Eventos', pendientes: 'Pendientes', pagos: 'Pagos', gastos: 'Gastos' };
@@ -78,7 +80,8 @@ function movimientoHTML(t) {
 // Todo lo de un día (debajo del mes, en la vista Día y al tocar un día de la semana).
 function detalleDiaHTML(f, d) {
     const x = d || { eventos: [], tareas: [], pagos: [], gasto: 0, movimientos: [] };
-    const vacio = !x.eventos.length && !x.tareas.length && !x.pagos.length && !x.movimientos.length;
+    const notas = notasDelDia(sel.notas(), f);
+    const vacio = !x.eventos.length && !x.tareas.length && !x.pagos.length && !x.movimientos.length && !notas.length;
     return `<div class="dia-detalle">
         <div class="seccion-head"><h2>${escapeHtml(nombreDia(f))}</h2><button class="link" data-action="calNuevo" data-f="${f}">${icon('plus')}Agregar</button></div>
         ${vacio ? `<section class="card">${vacioTecoHTML('Día libre', 'Nada programado. Toca Agregar para anotar un pendiente o un evento.', 'tranquilo')}</section>` : ''}
@@ -87,6 +90,7 @@ function detalleDiaHTML(f, d) {
         ${x.pagos.length || x.movimientos.length ? `<p class="lista-label">Dinero</p><section class="card"><div class="dinero">
             ${x.pagos.map(pagoHTML).join('')}${x.movimientos.map(movimientoHTML).join('')}
             ${x.gasto ? `<div class="dinero-pie"><span>Gastaste este día</span><b class="privado">${money(x.gasto)}</b></div>` : ''}</div></section>` : ''}
+        ${notas.length ? `<p class="lista-label">Registros</p><div class="notas-grid">${notas.map(notaCardHTML).join('')}</div>` : ''}
     </div>`;
 }
 

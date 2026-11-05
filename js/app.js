@@ -20,16 +20,21 @@ import * as hoy from './views/hoy.js';
 import * as pendientes from './views/pendientes.js';
 import * as ajustes from './views/ajustes.js';
 import * as calendario from './views/calendario.js';
+import * as registros from './views/registros.js';
+import * as registro from './views/registro.js';
 
 definirRuta('/hoy', hoy);
 definirRuta('/pendientes', pendientes);
 definirRuta('/ajustes', ajustes);
 definirRuta('/calendario', calendario);
+definirRuta('/registros', registros);
+definirRuta('/registro/:id', registro);
 
 const NAV = [
     ['#/hoy', 'sunrise', 'Hoy', ['/hoy']],
     ['#/pendientes', 'check-circle', 'Pendientes', ['/pendientes']],
     ['#/calendario', 'calendar', 'Calendario', ['/calendario']],
+    ['#/registros', 'note', 'Registros', ['/registros', '/registro']],
 ];
 const AJUSTES = ['#/ajustes', 'settings', 'Ajustes', ['/ajustes']];
 
@@ -44,7 +49,7 @@ function pintarNav() {
         ${NAV.map(link).join('')}
         <div class="side-bottom">${link(AJUSTES)}</div>`;
     const tab = ([h, i, t, p]) => `<a class="tab ${activo(p) ? 'activo' : ''}" href="${h}">${icon(i)}<span>${t}</span></a>`;
-    document.getElementById('tabbar').innerHTML = `${tab(NAV[0])}${tab(NAV[1])}<button class="tab-add" data-action="nuevo" aria-label="Agregar pendiente o evento">${icon('plus')}</button>${tab(NAV[2])}${tab(AJUSTES)}`;
+    document.getElementById('tabbar').innerHTML = `${tab(NAV[0])}${tab(NAV[1])}<button class="tab-add" data-action="nuevo" aria-label="Agregar">${icon('plus')}</button>${tab(NAV[2])}${tab(NAV[3])}`;
 }
 
 function pintarTop(vista, params) {
@@ -54,13 +59,16 @@ function pintarTop(vista, params) {
         ${t.atras ? `<a class="icon-btn top-back" href="${t.atras}" aria-label="Volver">${icon('chevron-right', 'rot180')}</a>` : ''}
         <div class="top-title"><h1>${escapeHtml(t.titulo || '')}</h1>${t.subtitulo ? `<p>${escapeHtml(t.subtitulo)}</p>` : ''}</div>
         ${store.demo ? '<span class="badge badge-warn">Demo</span>' : ''}
-        <button class="icon-btn" data-action="alternarTema" aria-label="${oscuro ? 'Tema claro' : 'Tema oscuro'}">${icon(oscuro ? 'sun' : 'moon')}</button>`;
+        <button class="icon-btn" data-action="alternarTema" aria-label="${oscuro ? 'Tema claro' : 'Tema oscuro'}">${icon(oscuro ? 'sun' : 'moon')}</button>
+        <a class="icon-btn top-ajustes" href="#/ajustes" aria-label="Ajustes">${icon('settings')}</a>`;
 }
 
 function pintarVista(nuevaVista = false) {
     if (!store.cargado) return;
     const r = rutaActual();
     if (!r?.vista) return;
+    // Un editor abierto (p. ej. un registro) no se repinta con cada guardado.
+    if (!nuevaVista && r.vista.conservar?.()) return;
     const el = document.getElementById('vista');
     const scroll = window.scrollY;
     // Conserva el foco de la captura rápida al repintar (al agregar varios seguidos).

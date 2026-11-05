@@ -1,6 +1,6 @@
 // Service worker de Tlacuilo: la app funciona sin conexión con la versión instalada
 // y avisa cuando hay una nueva (SKIP_WAITING desde la app).
-const CACHE_NAME = 'tlacuilo-cache-v3'; // v3: fase 2: calendario y eventos
+const CACHE_NAME = 'tlacuilo-cache-v4'; // v4: fase 3: registros
 
 const urlsToCache = [
     './',
@@ -34,11 +34,13 @@ const urlsToCache = [
     './js/domain/morralla/recurrentes.js',
     './js/domain/morralla/tarjetas.js',
     './js/domain/morralla/terceros.js',
+    './js/domain/notas.js',
     './js/domain/tareas.js',
     './js/domain/teco.js',
     './js/firebase-init.js',
     './js/lib/apariencia.js',
     './js/lib/demo-data.js',
+    './js/lib/dictado.js',
     './js/lib/format.js',
     './js/lib/icons.js',
     './js/views/acceso.js',
@@ -46,6 +48,8 @@ const urlsToCache = [
     './js/views/calendario.js',
     './js/views/hoy.js',
     './js/views/pendientes.js',
+    './js/views/registro.js',
+    './js/views/registros.js',
 ];
 
 self.addEventListener('install', (event) => {

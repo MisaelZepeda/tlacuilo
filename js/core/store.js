@@ -12,7 +12,7 @@ export const store = {
     ui: { privacidad: false },
 };
 
-function vacio() { return { meta: null, ajustes: {}, listas: {}, tareas: {}, eventos: {} }; }
+function vacio() { return { meta: null, ajustes: {}, listas: {}, tareas: {}, eventos: {}, notas: {} }; }
 
 const oyentes = new Set();
 export function suscribir(fn) { oyentes.add(fn); return () => oyentes.delete(fn); }
@@ -21,7 +21,7 @@ function avisar() { memo.clear(); oyentes.forEach(fn => fn()); }
 function normalizar(d = {}) {
     const out = vacio();
     Object.keys(out).forEach(k => { if (d[k] != null) out[k] = d[k]; });
-    ['listas', 'tareas', 'eventos'].forEach(k => {
+    ['listas', 'tareas', 'eventos', 'notas'].forEach(k => {
         const col = {};
         Object.entries(out[k] || {}).forEach(([id, v]) => { if (v) col[id] = { ...v, id }; });
         out[k] = col;
@@ -47,6 +47,8 @@ export const sel = {
     lista: (id) => store.agenda.listas[id] || null,
     eventos: () => memorizar('eventos', () => Object.values(store.agenda.eventos)),
     evento: (id) => store.agenda.eventos[id] || null,
+    notas: () => memorizar('notas', () => Object.values(store.agenda.notas)),
+    nota: (id) => store.agenda.notas[id] || null,
     ajustes: () => store.agenda.ajustes || {},
     // Tu perfil es el de Morralla (mismo usuario); Tlacuilo no guarda otro.
     perfil: () => store.v4?.perfil || {},

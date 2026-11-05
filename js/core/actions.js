@@ -65,6 +65,24 @@ export async function borrarEvento(id) {
     return () => actualizar({ [`eventos/${id}`]: { ...previo, id: undefined } });
 }
 
+// ---------- Registros (notas, apuntes, transcripciones) ----------
+// Se guardan mientras escribes: solo cambia lo que se pasa.
+export function guardarNota(id, cambios) {
+    const previo = agenda().notas[id];
+    const base = previo ? {} : { creadoEn: Date.now(), fecha: hoyISO(), tipo: 'nota' };
+    const updates = {};
+    Object.entries({ ...base, ...cambios, editadoEn: Date.now() }).forEach(([k, v]) => { updates[`notas/${id}/${k}`] = v; });
+    return actualizar(updates);
+}
+
+export async function borrarNota(id) {
+    const previo = agenda().notas[id];
+    await actualizar({ [`notas/${id}`]: null });
+    return () => actualizar({ [`notas/${id}`]: { ...previo, id: undefined } });
+}
+
+export { nuevoId };
+
 // ---------- Listas ----------
 export function guardarLista(l) {
     const id = l.id || nuevoId();

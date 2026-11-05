@@ -119,3 +119,39 @@ test('calendario: dinero de Morralla por día', () => {
     assert.ok(d['2026-11-18'].pagos.find(p => p.tipo === 'corte'));
     assert.deepEqual(dineroEnRango({}, '2026-11-01', '2026-11-30'), {});
 });
+
+// ---------- Fase 3: registros ----------
+import { tituloNota, resumenNota, contarPalabras, etiquetasDe, etiquetasUsadas, filtrarNotas, notasDelDia, agregarDictado } from '../js/domain/notas.js';
+
+test('registros: título, resumen, palabras y etiquetas', () => {
+    const n = { contenido: 'Ideas para el viaje\nLlevar #pasaporte\nReservar hotel #viaje' };
+    assert.equal(tituloNota(n), 'Ideas para el viaje');
+    assert.equal(resumenNota(n), 'Llevar #pasaporte · Reservar hotel #viaje');
+    assert.equal(tituloNota({ titulo: 'Junta', contenido: 'x' }), 'Junta');
+    assert.equal(tituloNota({ contenido: '' }), 'Sin título');
+    assert.equal(contarPalabras('  hola   mundo bonito '), 3);
+    assert.deepEqual(etiquetasDe({ ...n, etiquetas: ['Viaje', 'trabajo'] }), ['viaje', 'trabajo', 'pasaporte']);
+    assert.deepEqual(etiquetasUsadas([n, { contenido: '#viaje otra' }]), ['viaje', 'pasaporte']);
+});
+
+test('registros: filtros, búsqueda sin acentos y orden', () => {
+    const notas = [
+        { id: 'a', tipo: 'nota', contenido: 'Lista del súper', editadoEn: 1, fecha: '2026-11-05' },
+        { id: 'b', tipo: 'apunte', contenido: 'Clase de cálculo #escuela', editadoEn: 3, fecha: '2026-11-04' },
+        { id: 'c', tipo: 'transcripcion', contenido: 'Llamada con el banco', editadoEn: 2, fijada: true, fecha: '2026-11-05' },
+    ];
+    assert.deepEqual(filtrarNotas(notas).map(n => n.id), ['c', 'b', 'a']);
+    assert.deepEqual(filtrarNotas(notas, { tipo: 'apunte' }).map(n => n.id), ['b']);
+    assert.deepEqual(filtrarNotas(notas, { tipo: 'fijadas' }).map(n => n.id), ['c']);
+    assert.deepEqual(filtrarNotas(notas, { q: 'calculo' }).map(n => n.id), ['b']);
+    assert.deepEqual(filtrarNotas(notas, { etiqueta: 'escuela' }).map(n => n.id), ['b']);
+    assert.deepEqual(notasDelDia(notas, '2026-11-05').map(n => n.id), ['c', 'a']);
+});
+
+test('registros: el dictado se une con espacio y mayúscula', () => {
+    assert.equal(agregarDictado('', 'hola qué tal'), 'Hola qué tal');
+    assert.equal(agregarDictado('Hola', 'qué tal'), 'Hola qué tal');
+    assert.equal(agregarDictado('Listo.', 'otra cosa'), 'Listo. Otra cosa');
+    assert.equal(agregarDictado('Uno\n', 'dos'), 'Uno\nDos');
+    assert.equal(agregarDictado('Igual', '   '), 'Igual');
+});

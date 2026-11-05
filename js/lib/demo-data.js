@@ -52,5 +52,12 @@ export function construirDemo(hoy = new Date()) {
         e4: { titulo: 'Viaje a Oaxaca', fecha: d(9), todoElDia: true, color: '#13855c', nota: 'Vuelo a las 8:40', creadoEn: 4 },
         e5: { titulo: 'Revisión con el contador', fecha: d(2), horaInicio: '11:00', horaFin: '12:00', lugar: 'Videollamada', color: '#5b3df5', creadoEn: 5 },
     };
-    return { agenda: { meta: { version: 1, origen: 'demo' }, ajustes: {}, listas, tareas, eventos }, v4 };
+    const hace = (horas) => Date.now() - horas * 3600e3;
+    const notas = {
+        n1: { tipo: 'apunte', titulo: 'Junta de planeación', contenido: 'Objetivos del trimestre:\n- Cerrar el reporte antes del 15\n- Revisar presupuesto con finanzas\n- Contratar a una persona para soporte\n#trabajo #q4', fecha: h, creadoEn: hace(3), editadoEn: hace(2), fijada: true },
+        n2: { tipo: 'nota', titulo: '', contenido: 'Regalos de Navidad\nMamá: libro de cocina\nPepe: audífonos\nLaura: planta #navidad', fecha: d(-1), creadoEn: hace(26), editadoEn: hace(25) },
+        n3: { tipo: 'transcripcion', titulo: 'Idea en el coche', contenido: 'Podría organizar los pendientes de la casa por cuarto y hacer uno distinto cada sábado. Así no se junta todo el fin de mes.', fecha: d(-3), creadoEn: hace(72), editadoEn: hace(72) },
+        n4: { tipo: 'nota', titulo: 'Contraseña del wifi de la oficina', contenido: 'Pedírsela a Carlos, no la tengo anotada.', fecha: d(-6), creadoEn: hace(150), editadoEn: hace(150) },
+    };
+    return { agenda: { meta: { version: 1, origen: 'demo' }, ajustes: {}, listas, tareas, eventos, notas }, v4 };
 }
