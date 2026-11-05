@@ -15,6 +15,7 @@ import { aplicarApariencia, temaEfectivo, alternarTemaSesion } from './lib/apari
 import { construirDemo } from './lib/demo-data.js';
 import { mostrarAcceso, ocultarAcceso } from './views/acceso.js';
 import { consejoAlAzar } from './domain/teco.js';
+import { iniciarPush } from './lib/push.js';
 
 import * as hoy from './views/hoy.js';
 import * as pendientes from './views/pendientes.js';
@@ -102,7 +103,11 @@ function mostrarApp() {
     ocultarAcceso();
     document.getElementById('app').hidden = false;
     ocultarCarga();
+    if (!store.demo) iniciarPush((n) => toast(n === 1 ? 'Guardé 1 pendiente que le dictaste a Siri' : `Guardé ${n} pendientes que le dictaste a Siri`));
 }
+
+// Al tocar un aviso con la app abierta, el service worker pide ir a su pantalla.
+navigator.serviceWorker?.addEventListener('message', (e) => { if (e.data?.tipo === 'navegar' && /^#\//.test(e.data.ruta || '')) navegar(e.data.ruta); });
 
 // ---------- Datos ----------
 let primeraVez = true;

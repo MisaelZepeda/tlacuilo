@@ -155,3 +155,49 @@ test('registros: el dictado se une con espacio y mayúscula', () => {
     assert.equal(agregarDictado('Uno\n', 'dos'), 'Uno\nDos');
     assert.equal(agregarDictado('Igual', '   '), 'Igual');
 });
+
+// ---------- Fase 4: Siri y avisos ----------
+import { interpretarPendiente, describirCuando } from '../js/domain/dictado.js';
+
+test('Siri: título, fecha y hora de lo dictado', () => {
+    const h = '2026-11-05'; // jueves
+    assert.deepEqual(interpretarPendiente('llamar al dentista mañana a las 5', h, '13:00'), { titulo: 'Llamar al dentista', fecha: '2026-11-06', hora: '17:00' });
+    assert.deepEqual(interpretarPendiente('Recuérdame pagar la luz el viernes', h), { titulo: 'Pagar la luz', fecha: '2026-11-06', hora: null });
+    assert.deepEqual(interpretarPendiente('junta con Ana el lunes a las 10 de la mañana', h), { titulo: 'Junta con Ana', fecha: '2026-11-09', hora: '10:00' });
+    assert.deepEqual(interpretarPendiente('comprar pastel el 15 de diciembre', h), { titulo: 'Comprar pastel', fecha: '2026-12-15', hora: null });
+    assert.deepEqual(interpretarPendiente('renovar pasaporte en 2 semanas', h), { titulo: 'Renovar pasaporte', fecha: '2026-11-19', hora: null });
+    assert.deepEqual(interpretarPendiente('sacar la basura a las 8 y media de la noche', h, '21:00'), { titulo: 'Sacar la basura', fecha: '2026-11-06', hora: '20:30' });
+    assert.deepEqual(interpretarPendiente('tengo que leer el contrato', h), { titulo: 'Leer el contrato', fecha: null, hora: null });
+    assert.deepEqual(interpretarPendiente('cita el 2', h), { titulo: 'Cita', fecha: '2026-12-02', hora: null });
+    assert.deepEqual(interpretarPendiente('revisar correo hoy a las 17:45', h), { titulo: 'Revisar correo', fecha: h, hora: '17:45' });
+    assert.equal(interpretarPendiente('   ', h), null);
+    assert.equal(describirCuando('2026-11-06', '17:00', h), 'mañana a las 17:00');
+    assert.equal(describirCuando('2026-11-09', null, h), 'el lunes 9 de noviembre');
+});
+
+import { calcularAvisos, momento } from '../js/domain/recordatorios.js';
+
+test('avisos: pendiente a su hora, evento 15 min antes, resumen y vistazo a mañana', () => {
+    const ahora = new Date(2026, 10, 5, 7, 0); // jueves 7:00
+    const tareas = [
+        { id: 't1', titulo: 'Llamar al banco', fecha: '2026-11-05', hora: '12:15', hecha: false },
+        { id: 't2', titulo: 'Comprar pan', fecha: '2026-11-05', hecha: false },
+        { id: 't3', titulo: 'Licencia', fecha: '2026-11-01', hecha: false },
+        { id: 't4', titulo: 'Ya hecho', fecha: '2026-11-05', hora: '09:00', hecha: true },
+        { id: 't5', titulo: 'Despensa', fecha: '2026-11-06', hecha: false },
+    ];
+    const eventos = [{ id: 'e1', titulo: 'Dentista', fecha: '2026-11-05', horaInicio: '17:30', horaFin: '18:00', lugar: 'Consultorio' }];
+    const a = calcularAvisos({ tareas, eventos }, ahora);
+    const porId = Object.fromEntries(a.map(x => [x.id, x]));
+    assert.equal(porId['tarea:t1:2026-11-05:12:15'].at, momento('2026-11-05', '12:15'));
+    assert.ok(!a.some(x => x.id.includes('t4')));                       // lo hecho no avisa
+    assert.equal(porId['evento:e1:2026-11-05:17:30'].at, momento('2026-11-05', '17:15'));
+    assert.match(porId['evento:e1:2026-11-05:17:30'].body, /Consultorio/);
+    const resumen = porId['resumen:2026-11-05'];
+    assert.equal(resumen.at, momento('2026-11-05', '08:00'));
+    assert.match(resumen.body, /1 evento: Dentista/);
+    assert.match(resumen.body, /2 pendientes/);
+    assert.match(resumen.body, /1 atrasado/);
+    assert.equal(porId['manana:2026-11-06'].at, momento('2026-11-05', '21:00'));
+    assert.ok(a.every((x, i) => i === 0 || a[i - 1].at <= x.at));
+});

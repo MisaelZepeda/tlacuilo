@@ -246,3 +246,7 @@
 .editor-mic { gap: 8px; }
 .editor-mic.grabando { background: var(--neg) !important; color: #fff !important; animation: latido 1.2s ease-in-out infinite; }
 @keyframes latido { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--neg) 45%, transparent); } 50% { box-shadow: 0 0 0 8px transparent; } }
+.aviso-estado { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; margin: 0 0 12px; }
+.aviso-estado .icon { width: 18px; height: 18px; }
+.botones-fila { display: flex; gap: 8px; flex-wrap: wrap; }
+.siri ol.pasos[start] { margin-top: 4px; }

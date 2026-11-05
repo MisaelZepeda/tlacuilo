@@ -1,6 +1,6 @@
 // Service worker de Tlacuilo: la app funciona sin conexión con la versión instalada
 // y avisa cuando hay una nueva (SKIP_WAITING desde la app).
-const CACHE_NAME = 'tlacuilo-cache-v4'; // v4: fase 3: registros
+const CACHE_NAME = 'tlacuilo-cache-v5'; // v5: fase 4: avisos y Siri
 
 const urlsToCache = [
     './',
@@ -26,6 +26,7 @@ const urlsToCache = [
     './js/core/router.js',
     './js/core/store.js',
     './js/domain/calendario.js',
+    './js/domain/dictado.js',
     './js/domain/fechas.js',
     './js/domain/finanzas.js',
     './js/domain/morralla/calendario.js',
@@ -35,6 +36,7 @@ const urlsToCache = [
     './js/domain/morralla/tarjetas.js',
     './js/domain/morralla/terceros.js',
     './js/domain/notas.js',
+    './js/domain/recordatorios.js',
     './js/domain/tareas.js',
     './js/domain/teco.js',
     './js/firebase-init.js',
@@ -43,6 +45,7 @@ const urlsToCache = [
     './js/lib/dictado.js',
     './js/lib/format.js',
     './js/lib/icons.js',
+    './js/lib/push.js',
     './js/views/acceso.js',
     './js/views/ajustes.js',
     './js/views/calendario.js',
@@ -98,4 +101,30 @@ self.addEventListener('fetch', (event) => {
             return enCache || red;
         })
     );
+});
+
+// ---------- Avisos (Web Push desde el Worker de Cloudflare) ----------
+self.addEventListener('push', (event) => {
+    let m = {};
+    try { m = event.data ? event.data.json() : {}; } catch { m = { title: 'Tlacuilo', body: event.data?.text() || '' }; }
+    event.waitUntil(self.registration.showNotification(m.title || 'Tlacuilo', {
+        body: m.body || '',
+        icon: 'icon-192x192.png',
+        badge: 'icon-192x192.png',
+        tag: m.tag || undefined,
+        data: { url: (m.data && m.data.url) || '#/hoy' },
+    }));
+});
+
+// Al tocar el aviso: abre (o enfoca) Tlacuilo en la pantalla que corresponde.
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    const ruta = event.notification.data?.url || '#/hoy';
+    const destino = new URL(`./${ruta.startsWith('#') ? ruta : '#/hoy'}`, self.registration.scope).href;
+    event.waitUntil((async () => {
+        const ventanas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        const abierta = ventanas.find(v => v.url.startsWith(self.registration.scope));
+        if (abierta) { await abierta.focus(); return abierta.navigate(destino).catch(() => abierta.postMessage({ tipo: 'navegar', ruta })); }
+        return self.clients.openWindow(destino);
+    })());
 });

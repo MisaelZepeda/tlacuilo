@@ -27,4 +27,4 @@ lo que toca y te da consejos de organización.
 1. **Base, Hoy y Pendientes** (listas, fecha y hora, prioridad, subtareas, repetición).
 2. **Calendario** (mes, semana y día) con eventos y capas de Morralla: pagos, cobros y gasto por día.
 3. **Registros**: notas, apuntes y transcripciones por voz, con etiquetas (#así), fijadas y guardado automático.
-4. Avisos en el iPhone y Siri.
+4. **Avisos y Siri**: resumen de la mañana, aviso a la hora de cada pendiente y antes de cada evento, vistazo a mañana; "Oye Siri, pendiente" con fecha y hora. Usa el Worker `morralla-push` (repositorio de Morralla) con `?app=tlacuilo`.
