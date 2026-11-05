@@ -1,6 +1,6 @@
 // Service worker de Tlacuilo: la app funciona sin conexión con la versión instalada
 // y avisa cuando hay una nueva (SKIP_WAITING desde la app).
-const CACHE_NAME = 'tlacuilo-cache-v1'; // v1: fase 1: hoy y pendientes
+const CACHE_NAME = 'tlacuilo-cache-v2'; // v2: hoja ajustada al teclado del iPhone
 
 const urlsToCache = [
     './',

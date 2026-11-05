@@ -125,7 +125,7 @@
 .capa { position: fixed; inset: 0; z-index: 100; background: var(--overlay); display: flex; align-items: flex-end; justify-content: center; animation: aparecer var(--t) var(--ease); }
 @media (min-width: 700px) { .capa { align-items: center; padding: 24px; } }
 .hoja {
-    width: 100%; max-width: 520px; max-height: 94vh; overflow-y: auto; overscroll-behavior: contain;
+    width: 100%; max-width: 520px; max-height: calc(var(--alto-visible, 100vh) * 0.94); overflow-y: auto; overscroll-behavior: contain;
     background: var(--surface); border-radius: 26px 26px 0 0;
     padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
     animation: subir 280ms var(--ease); box-shadow: var(--shadow-pop);

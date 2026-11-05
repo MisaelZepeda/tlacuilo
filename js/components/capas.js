@@ -21,18 +21,42 @@ export function abrirHoja({ titulo, html, alMontar, alCerrar, acciones = '' }) {
     capa.addEventListener('mousedown', (e) => { if (e.target === capa) cerrarHoja(); });
     raiz().appendChild(capa);
     document.body.style.overflow = 'hidden';
-    hojaActual = { capa, alCerrar };
+    hojaActual = { capa, alCerrar, soltar: ajustarAlTeclado(capa) };
     alMontar?.(capa.querySelector('.hoja'));
     return capa.querySelector('.hoja');
 }
 
 export function cerrarHoja(silencioso = false) {
     if (!hojaActual) return;
-    const { capa, alCerrar } = hojaActual;
+    const { capa, alCerrar, soltar } = hojaActual;
     hojaActual = null;
+    soltar?.();
     capa.remove();
     if (!document.querySelector('.capa')) document.body.style.overflow = '';
     if (!silencioso) alCerrar?.();
+}
+
+// En iPhone el teclado no cambia el alto de la página, solo el área visible
+// (visualViewport). La capa se ajusta a esa área para que la hoja no quede
+// tapada ni empujada hacia arriba, y el campo que se edita queda a la vista.
+function ajustarAlTeclado(capa) {
+    const vv = window.visualViewport;
+    if (!vv) return null;
+    const ajustar = () => {
+        capa.style.top = `${vv.offsetTop}px`;
+        capa.style.height = `${vv.height}px`;
+        capa.style.bottom = 'auto';
+        capa.style.setProperty('--alto-visible', `${vv.height}px`);
+    };
+    const alEnfocar = (e) => {
+        if (!e.target.matches('input, textarea, select')) return;
+        setTimeout(() => e.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 320);
+    };
+    ajustar();
+    vv.addEventListener('resize', ajustar);
+    vv.addEventListener('scroll', ajustar);
+    capa.addEventListener('focusin', alEnfocar);
+    return () => { vv.removeEventListener('resize', ajustar); vv.removeEventListener('scroll', ajustar); };
 }
 
 export function hojaAbierta() { return hojaActual?.capa.querySelector('.hoja') || null; }
