@@ -13,6 +13,8 @@ import { abrirTarea } from '../components/tarea-form.js';
 import { clasificar } from '../domain/tareas.js';
 import { estadoTeco, consejoAlAzar } from '../domain/teco.js';
 import { pendientesDeDinero, gastoDelDia } from '../domain/finanzas.js';
+import { eventosEnRango } from '../domain/calendario.js';
+import { abrirEvento, COLORES_EVENTO } from '../components/evento-form.js';
 import { hoyISO, sumarDias } from '../domain/fechas.js';
 
 export const MORRALLA_URL = 'https://misaelzepeda.github.io/financiapp/';
@@ -41,12 +43,29 @@ function tecoHTML() {
             <span class="teco-card-consejo"><b>Consejo:</b> ${escapeHtml(consejo)}</span></span></button>`;
 }
 
+// Agenda del día: eventos de todo el día arriba; luego eventos y pendientes con hora, en orden.
 function agendaHTML(conHora) {
-    if (!conHora.length) return '';
+    const h = hoyISO();
+    const eventos = eventosEnRango(sel.eventos(), h, h);
+    const todoElDia = eventos.filter(e => e.todoElDia || !e.horaInicio);
+    const items = [
+        ...eventos.filter(e => !e.todoElDia && e.horaInicio).map(e => ({ hora: e.horaInicio, html: eventoAgendaHTML(e) })),
+        ...conHora.map(t => ({ hora: t.hora, html: tareaHTML(t, { mostrarFecha: false, mostrarHora: false }) })),
+    ].sort((a, b) => a.hora.localeCompare(b.hora));
+    if (!items.length && !todoElDia.length) return '';
     const ahora = new Date().toTimeString().slice(0, 5);
-    return `<div class="seccion-head"><h2>Agenda</h2></div>
-        <section class="card"><div class="agenda">${conHora.map(t => `<div class="agenda-item ${t.hora < ahora ? 'pasada' : ''}">
-            <div class="agenda-hora">${escapeHtml(t.hora)}</div>${tareaHTML(t, { mostrarFecha: false, mostrarHora: false })}</div>`).join('')}</div></section>`;
+    return `<div class="seccion-head"><h2>Agenda</h2><a class="link" href="#/calendario">Calendario</a></div>
+        <section class="card">
+            ${todoElDia.length ? `<div class="todo-el-dia">${todoElDia.map(e => `<button class="evento-chip" data-action="editarEvento" data-id="${escapeHtml(e.baseId)}" style="--c:${escapeHtml(e.color || COLORES_EVENTO[0])}">${escapeHtml(e.titulo)}</button>`).join('')}</div>` : ''}
+            ${items.length ? `<div class="agenda">${items.map(i => `<div class="agenda-item ${i.hora < ahora ? 'pasada' : ''}"><div class="agenda-hora">${escapeHtml(i.hora)}</div>${i.html}</div>`).join('')}</div>` : ''}
+        </section>`;
+}
+
+function eventoAgendaHTML(e) {
+    return `<button class="tarea agenda-evento" data-action="editarEvento" data-id="${escapeHtml(e.baseId)}" style="--c:${escapeHtml(e.color || COLORES_EVENTO[0])}">
+        <span class="evento-icono">${icon('calendar')}</span>
+        <span class="tarea-body"><span class="tarea-titulo">${escapeHtml(e.titulo)}</span>
+        <span class="tarea-meta"><span>${icon('clock')}${escapeHtml(e.horaInicio)}${e.horaFin ? `–${escapeHtml(e.horaFin)}` : ''}</span>${e.lugar ? `<span>${escapeHtml(e.lugar)}</span>` : ''}</span></span></button>`;
 }
 
 function dineroHTML() {
@@ -57,7 +76,7 @@ function dineroHTML() {
     if (!items.length && !gasto) return '';
     const ICONO = { pago: 'credit-card', recurrente: 'repeat', ingreso: 'coin', cobro: 'share' };
     const yaEsPendiente = (clave) => sel.tareas().some(t => t.origen?.morralla === clave);
-    return `<div class="seccion-head"><h2>Dinero</h2><a class="link" href="${MORRALLA_URL}" target="_blank" rel="noopener">Abrir Morralla ${icon('external')}</a></div>
+    return `<div class="seccion-head"><h2>Dinero</h2></div>
         <section class="card"><div class="dinero">
             ${items.map(e => `<div class="dinero-fila">
                 <div class="fila-ico">${icon(ICONO[e.tipo] || 'coin')}</div>

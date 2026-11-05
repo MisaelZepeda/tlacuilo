@@ -73,3 +73,49 @@ test('Morralla: lo que vence, cobros de Te deben y gasto del día', () => {
     assert.equal(gastoDelDia(v4, '2026-11-05'), 120);   // la compra para Juan no cuenta
     assert.deepEqual(pendientesDeDinero({}, HOY), []);
 });
+
+// ---------- Fase 2: calendario ----------
+import { ocurrencias, eventosEnRango, dineroEnRango, cuadriculaMes, inicioSemana, nivelesGasto } from '../js/domain/calendario.js';
+
+test('eventos: ocurrencias con y sin repetición', () => {
+    assert.deepEqual(ocurrencias({ fecha: '2026-11-10' }, '2026-11-01', '2026-11-30'), ['2026-11-10']);
+    assert.deepEqual(ocurrencias({ fecha: '2026-12-10' }, '2026-11-01', '2026-11-30'), []);
+    assert.deepEqual(ocurrencias({ fecha: '2026-10-07', repetir: { unidad: 'semana', cada: 1 } }, '2026-11-01', '2026-11-30'),
+        ['2026-11-04', '2026-11-11', '2026-11-18', '2026-11-25']);
+    assert.deepEqual(ocurrencias({ fecha: '2026-01-31', repetir: { unidad: 'mes', cada: 1 } }, '2026-11-01', '2026-12-31'), ['2026-11-30', '2026-12-31']);
+    assert.deepEqual(ocurrencias({ fecha: '1990-11-12', repetir: { unidad: 'anio', cada: 1 } }, '2026-11-01', '2026-11-30'), ['2026-11-12']);   // cumpleaños
+    const cada2 = ocurrencias({ fecha: '2026-10-30', repetir: { unidad: 'dia', cada: 2 } }, '2026-11-01', '2026-11-06');
+    assert.deepEqual(cada2, ['2026-11-01', '2026-11-03', '2026-11-05']);
+    const r = eventosEnRango([{ id: 'a', fecha: '2026-11-10', horaInicio: '18:00' }, { id: 'b', fecha: '2026-11-10', todoElDia: true }, { id: 'c', fecha: '2026-11-10', horaInicio: '09:00' }], '2026-11-01', '2026-11-30');
+    assert.deepEqual(r.map(e => e.id), ['b', 'c', 'a']);
+    assert.equal(r[0].baseId, 'b');
+});
+
+test('calendario: cuadrícula, semana y niveles de gasto', () => {
+    const s = cuadriculaMes('2026-11');           // 1 nov 2026 es domingo
+    assert.equal(s[0].filter(Boolean)[0], '2026-11-01');
+    assert.equal(s[0][6], '2026-11-01');
+    assert.ok(s.every(semana => semana.length === 7));
+    assert.equal(inicioSemana('2026-11-05'), '2026-11-02');
+    const nivel = nivelesGasto({ a: { gasto: 100 }, b: { gasto: 120 }, c: { gasto: 5000 }, d: { gasto: 0 } });
+    assert.equal(nivel(0), 0);
+    assert.equal(nivel(5000), 4);
+});
+
+test('calendario: dinero de Morralla por día', () => {
+    const v4 = {
+        cuentas: { tdc: { nombre: 'Platino', tipo: 'credito', diaCorte: 18, diaPago: 6, saldoInicial: 0, fechaInicial: '2026-01-01' } },
+        transacciones: {
+            a: { tipo: 'gasto', monto: 800, fecha: '2026-10-10', cuentaId: 'tdc', categoriaId: 'comida' },
+            b: { tipo: 'gasto', monto: 120, fecha: '2026-11-03', cuentaId: 'tdc', categoriaId: 'comida' },
+            c: { tipo: 'gasto', monto: 600, msi: 3, fecha: '2026-11-03', cuentaId: 'tdc', categoriaId: 'otros', paraTercero: 'Ana' },
+        },
+        recurrentes: {},
+    };
+    const d = dineroEnRango(v4, '2026-11-01', '2026-11-30', HOY);
+    assert.equal(d['2026-11-03'].gasto, 120);                     // la compra para Ana no cuenta
+    assert.equal(d['2026-11-03'].movimientos.length, 2);
+    assert.ok(d['2026-11-06'].pagos.find(p => p.titulo === 'Pago Platino' && p.monto === 800));
+    assert.ok(d['2026-11-18'].pagos.find(p => p.tipo === 'corte'));
+    assert.deepEqual(dineroEnRango({}, '2026-11-01', '2026-11-30'), {});
+});

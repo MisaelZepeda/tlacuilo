@@ -7,7 +7,7 @@ import * as A from './core/actions.js';
 import { definirRuta, iniciarRouter, alNavegar, rutaActual, navegar } from './core/router.js';
 import { iniciarEventos, on } from './core/eventos.js';
 import { cerrarHoja, toast, confirmar } from './components/capas.js';
-import { abrirTarea } from './components/tarea-form.js';
+import { abrirNuevo } from './components/evento-form.js';
 import { tecoSVG } from './components/teco.js';
 import { icon } from './lib/icons.js';
 import { escapeHtml } from './lib/format.js';
@@ -19,16 +19,19 @@ import { consejoAlAzar } from './domain/teco.js';
 import * as hoy from './views/hoy.js';
 import * as pendientes from './views/pendientes.js';
 import * as ajustes from './views/ajustes.js';
+import * as calendario from './views/calendario.js';
 
 definirRuta('/hoy', hoy);
 definirRuta('/pendientes', pendientes);
 definirRuta('/ajustes', ajustes);
+definirRuta('/calendario', calendario);
 
-const MORRALLA = hoy.MORRALLA_URL;
 const NAV = [
     ['#/hoy', 'sunrise', 'Hoy', ['/hoy']],
     ['#/pendientes', 'check-circle', 'Pendientes', ['/pendientes']],
+    ['#/calendario', 'calendar', 'Calendario', ['/calendario']],
 ];
+const AJUSTES = ['#/ajustes', 'settings', 'Ajustes', ['/ajustes']];
 
 // ---------- Render ----------
 function activo(prefijos) { const p = rutaActual().path || ''; return prefijos.some(x => p === x || p.startsWith(x + '/') || p.startsWith(x + '?')); }
@@ -37,14 +40,11 @@ function pintarNav() {
     const link = ([h, i, t, p]) => `<a class="side-link ${activo(p) ? 'activo' : ''}" href="${h}">${icon(i)}${t}</a>`;
     document.getElementById('sidebar').innerHTML = `
         <div class="brand"><img src="logo.svg" alt="">tlacuilo</div>
-        <button class="btn btn-primary side-add" data-action="nuevo">${icon('plus')}Nuevo pendiente</button>
+        <button class="btn btn-primary side-add" data-action="nuevo">${icon('plus')}Agregar</button>
         ${NAV.map(link).join('')}
-        <div class="side-sep"></div>
-        <a class="side-link" href="${MORRALLA}" target="_blank" rel="noopener">${icon('coin')}Morralla ${icon('external', 'side-ext')}</a>
-        <div class="side-bottom">${link(['#/ajustes', 'settings', 'Ajustes', ['/ajustes']])}</div>`;
+        <div class="side-bottom">${link(AJUSTES)}</div>`;
     const tab = ([h, i, t, p]) => `<a class="tab ${activo(p) ? 'activo' : ''}" href="${h}">${icon(i)}<span>${t}</span></a>`;
-    document.getElementById('tabbar').innerHTML = `${tab(NAV[0])}${tab(NAV[1])}<button class="tab-add" data-action="nuevo" aria-label="Nuevo pendiente">${icon('plus')}</button>
-        <a class="tab" href="${MORRALLA}" target="_blank" rel="noopener">${icon('coin')}<span>Morralla</span></a>${tab(['#/ajustes', 'settings', 'Ajustes', ['/ajustes']])}`;
+    document.getElementById('tabbar').innerHTML = `${tab(NAV[0])}${tab(NAV[1])}<button class="tab-add" data-action="nuevo" aria-label="Agregar pendiente o evento">${icon('plus')}</button>${tab(NAV[2])}${tab(AJUSTES)}`;
 }
 
 function pintarTop(vista, params) {
@@ -126,7 +126,8 @@ function entrarDemo() {
 }
 
 // ---------- Acciones globales ----------
-on('nuevo', () => (rutaActual().patron === '/pendientes' ? pendientes.nuevoDesdeVista() : abrirTarea()));
+// El + pregunta si es pendiente o evento (en Calendario, para el día elegido).
+on('nuevo', () => abrirNuevo(rutaActual().patron === '/calendario' ? { fecha: calendario.diaSeleccionado() } : {}));
 on('cerrarHoja', () => cerrarHoja());
 on('alternarTema', () => alternarTemaSesion());
 on('entrarDemo', entrarDemo);
@@ -143,7 +144,7 @@ on('cerrarSesion', async () => {
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'n' || e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.target.closest('input, textarea, select, [contenteditable]') || document.querySelector('.capa')) return;
-    if (!document.getElementById('app').hidden) { e.preventDefault(); abrirTarea(); }
+    if (!document.getElementById('app').hidden) { e.preventDefault(); abrirNuevo(); }
 });
 
 // ---------- Inicio ----------

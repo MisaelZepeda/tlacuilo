@@ -6,9 +6,7 @@ import { on } from '../core/eventos.js';
 import { icon } from '../lib/icons.js';
 import { escapeHtml } from '../lib/format.js';
 import { tareaHTML, vacioTecoHTML, COLORES_LISTA } from '../components/piezas.js';
-import { abrirTarea } from '../components/tarea-form.js';
 import { clasificar } from '../domain/tareas.js';
-import { sumarDias, hoyISO } from '../domain/fechas.js';
 
 const VISTAS = { hoy: 'Hoy', proximos: 'Próximos', algun: 'Algún día', hechos: 'Hechos' };
 const f = { vista: 'hoy', listaId: '', q: '' };
@@ -79,9 +77,3 @@ const repintar = () => { const v = document.getElementById('vista'); if (v) v.in
 on('pVista', (el) => { f.vista = el.dataset.v; repintar(); });
 on('pLista', (el) => { f.listaId = el.dataset.v; repintar(); });
 on('pBuscar', (el) => { f.q = el.value; const l = document.getElementById('p-lista'); if (l) l.innerHTML = listaHTML(); }, 'input');
-
-// El + crea el pendiente con los valores de la vista actual.
-export function nuevoDesdeVista() {
-    const fecha = f.vista === 'algun' ? null : f.vista === 'proximos' ? sumarDias(hoyISO(), 1) : hoyISO();
-    abrirTarea({ fecha, listaId: f.listaId || null });
-}

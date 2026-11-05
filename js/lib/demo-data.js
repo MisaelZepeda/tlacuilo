@@ -45,5 +45,12 @@ export function construirDemo(hoy = new Date()) {
             net: { tipo: 'gasto', desc: 'Netflix', monto: 219, cuentaId: 'platino', frecuencia: 'mensual', diaMes: aFecha(h).getDate(), activo: true, proximaFecha: h, categoriaId: 'suscripciones' },
         },
     };
-    return { agenda: { meta: { version: 1, origen: 'demo' }, ajustes: {}, listas, tareas }, v4 };
+    const eventos = {
+        e1: { titulo: 'Comida con Laura', fecha: h, horaInicio: '14:00', horaFin: '15:30', lugar: 'Café Tacuba', color: '#d97706', creadoEn: 1 },
+        e2: { titulo: 'Clase de natación', fecha: d(-14), horaInicio: '07:00', horaFin: '08:00', color: '#2a78d6', repetir: { unidad: 'semana', cada: 1 }, creadoEn: 2 },
+        e3: { titulo: 'Cumpleaños de Pepe', fecha: `1992-${h.slice(5, 7)}-${String(Math.min(28, Number(d(3).slice(8)))).padStart(2, '0')}`, todoElDia: true, color: '#c2185b', repetir: { unidad: 'anio', cada: 1 }, creadoEn: 3 },
+        e4: { titulo: 'Viaje a Oaxaca', fecha: d(9), todoElDia: true, color: '#13855c', nota: 'Vuelo a las 8:40', creadoEn: 4 },
+        e5: { titulo: 'Revisión con el contador', fecha: d(2), horaInicio: '11:00', horaFin: '12:00', lugar: 'Videollamada', color: '#5b3df5', creadoEn: 5 },
+    };
+    return { agenda: { meta: { version: 1, origen: 'demo' }, ajustes: {}, listas, tareas, eventos }, v4 };
 }

@@ -33,7 +33,7 @@ export function abrirTarea(opts = {}) {
     abrirHoja({
         titulo: f.id ? 'Editar pendiente' : 'Nuevo pendiente',
         html: '<div id="tf"></div>',
-        alMontar: (hoja) => { pintar(); if (!f.id) hoja.querySelector('#tf-titulo')?.focus(); hoja.addEventListener('keydown', teclas); },
+        alMontar: (hoja) => { pintar(); if (!f.id && matchMedia('(hover: hover)').matches) hoja.querySelector('#tf-titulo')?.focus(); hoja.addEventListener('keydown', teclas); },
         alCerrar: () => { f = null; },
     });
 }

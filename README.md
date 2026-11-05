@@ -25,6 +25,6 @@ lo que toca y te da consejos de organización.
 ## Fases
 
 1. **Base, Hoy y Pendientes** (listas, fecha y hora, prioridad, subtareas, repetición).
-2. Calendario con capas de Morralla (pagos y gasto por día).
+2. **Calendario** (mes, semana y día) con eventos y capas de Morralla: pagos, cobros y gasto por día.
 3. Registros: notas, apuntes y transcripciones.
 4. Avisos en el iPhone y Siri.

@@ -1,6 +1,6 @@
 // Service worker de Tlacuilo: la app funciona sin conexión con la versión instalada
 // y avisa cuando hay una nueva (SKIP_WAITING desde la app).
-const CACHE_NAME = 'tlacuilo-cache-v2'; // v2: hoja ajustada al teclado del iPhone
+const CACHE_NAME = 'tlacuilo-cache-v3'; // v3: fase 2: calendario y eventos
 
 const urlsToCache = [
     './',
@@ -16,6 +16,7 @@ const urlsToCache = [
     './css/views.css',
     './js/app.js',
     './js/components/capas.js',
+    './js/components/evento-form.js',
     './js/components/piezas.js',
     './js/components/tarea-form.js',
     './js/components/teco.js',
@@ -24,6 +25,7 @@ const urlsToCache = [
     './js/core/eventos.js',
     './js/core/router.js',
     './js/core/store.js',
+    './js/domain/calendario.js',
     './js/domain/fechas.js',
     './js/domain/finanzas.js',
     './js/domain/morralla/calendario.js',
@@ -41,6 +43,7 @@ const urlsToCache = [
     './js/lib/icons.js',
     './js/views/acceso.js',
     './js/views/ajustes.js',
+    './js/views/calendario.js',
     './js/views/hoy.js',
     './js/views/pendientes.js',
 ];

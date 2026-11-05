@@ -150,3 +150,66 @@
 .search:not(:focus-within) { box-shadow: 0 0 0 1px var(--line); }
 .prio-1 { color: var(--info); } .prio-2 { color: var(--warn); } .prio-3 { color: var(--neg); }
 .chip.activo .prio { color: var(--on-accent); }
+
+/* ---------- Botón + : pendiente o evento ---------- */
+.nuevo-opciones { display: flex; flex-direction: column; gap: 10px; }
+.nuevo-opcion { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--r-lg); background: var(--surface-2); border: 0; text-align: left; cursor: pointer; color: var(--text); }
+.nuevo-opcion b { display: block; font-size: 16px; }
+.nuevo-opcion small { font-size: 13px; color: var(--muted); }
+.mas-ico { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-ink); flex-shrink: 0; }
+.mas-ico .icon { width: 21px; height: 21px; }
+
+/* ---------- Eventos ---------- */
+.evento { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; text-align: left; border: 0; cursor: pointer; color: var(--text);
+    background: color-mix(in srgb, var(--c) 10%, var(--surface)); border-left: 4px solid var(--c); border-radius: 0 var(--r-md) var(--r-md) 0; padding: 10px 12px; margin-top: 8px; }
+.evento:first-child { margin-top: 0; }
+.evento-hora { font-size: 12.5px; font-weight: 600; color: var(--c); }
+.evento-titulo { font-size: 15.5px; font-weight: 600; }
+.evento-meta { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.evento-meta .icon { width: 12px; height: 12px; }
+.agenda-evento { width: 100%; text-align: left; background: none; border: 0; cursor: pointer; color: var(--text); border-left-color: var(--c) !important; }
+.evento-icono { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--c); margin-top: 1px; }
+.evento-icono .icon { width: 15px; height: 15px; }
+.agenda-evento .tarea-body { display: flex; flex-direction: column; }
+.todo-el-dia { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.evento-chip { border: 0; cursor: pointer; padding: 6px 12px; border-radius: var(--r-full); font-size: 13.5px; font-weight: 600; background: color-mix(in srgb, var(--c) 14%, var(--surface)); color: var(--c); }
+
+/* ---------- Calendario ---------- */
+.cal-vistas { margin-bottom: 10px; }
+.cal-nav { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.cal-titulo { flex: 1; text-align: center; font-family: var(--font-display); font-size: 19px; letter-spacing: -0.02em; }
+.cal-mes { background: var(--surface); border-radius: var(--r-xl); padding: 10px 8px; box-shadow: 0 0 0 1px var(--line); }
+.cal-semana, .cal-fila { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.cal-semana { margin-bottom: 4px; }
+.cal-semana span { text-align: center; font-size: 11.5px; font-weight: 600; color: var(--muted); }
+.cal-fila + .cal-fila { margin-top: 4px; }
+.cal-celda { min-height: 56px; border-radius: 12px; border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px 4px; cursor: pointer; color: var(--text); min-width: 0; }
+.cal-celda.fuera { cursor: default; }
+.cal-celda:hover:not(.fuera) { background: var(--surface-2); }
+.cal-num { font-size: 14px; font-weight: 600; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; }
+.cal-celda.hoy .cal-num { background: var(--accent); color: var(--on-accent); }
+.cal-celda.sel { box-shadow: inset 0 0 0 2px var(--accent); }
+.cal-puntos { display: flex; gap: 3px; min-height: 6px; }
+.cal-puntos i { width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--accent)); }
+.cal-puntos i.p-tarea { background: var(--info); }
+.cal-puntos i.p-pago { background: var(--neg); }
+.cal-gasto { font-size: 10px; color: var(--muted); font-family: var(--font-num); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cal-celda.g1 { background: color-mix(in srgb, var(--warn) 7%, transparent); }
+.cal-celda.g2 { background: color-mix(in srgb, var(--warn) 13%, transparent); }
+.cal-celda.g3 { background: color-mix(in srgb, var(--warn) 20%, transparent); }
+.cal-celda.g4 { background: color-mix(in srgb, var(--warn) 28%, transparent); }
+.cal-celda.g4 .cal-gasto, .cal-celda.g3 .cal-gasto { color: var(--text-2); }
+.capas .chip .icon { width: 13px; height: 13px; }
+.dia-detalle { margin-top: 4px; }
+.eventos-dia { display: flex; flex-direction: column; }
+.dinero-fila.pagado { opacity: .6; }
+.dinero-fila .num { font-weight: 600; font-size: 14px; }
+
+.semana { display: flex; flex-direction: column; gap: 10px; }
+.semana-dia { padding: 12px 14px; }
+.semana-dia.hoy { box-shadow: inset 0 0 0 2px var(--accent); }
+.semana-cab { display: flex; align-items: center; gap: 8px; width: 100%; background: none; border: 0; padding: 0 0 6px; cursor: pointer; color: var(--text); text-align: left; }
+.semana-cab b { flex: 1; font-size: 15px; }
+.semana-cab .chev { width: 16px; height: 16px; color: var(--muted); }
+.semana-dia .lista-tareas .tarea { padding: 8px 0; }
+.lista-label { font-size: 12.5px; font-weight: 600; color: var(--muted); margin: 14px 4px 6px; }

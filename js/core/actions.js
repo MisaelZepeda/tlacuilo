@@ -52,6 +52,19 @@ export function moverTarea(id, fecha) {
     return actualizar({ [`tareas/${id}/fecha`]: fecha || null, ...(fecha ? {} : { [`tareas/${id}/hora`]: null }) });
 }
 
+// ---------- Eventos ----------
+export function guardarEvento(e) {
+    const id = e.id || nuevoId();
+    const previo = agenda().eventos[id];
+    return actualizar({ [`eventos/${id}`]: { ...e, id: undefined, creadoEn: previo?.creadoEn || Date.now() } }).then(() => id);
+}
+
+export async function borrarEvento(id) {
+    const previo = agenda().eventos[id];
+    await actualizar({ [`eventos/${id}`]: null });
+    return () => actualizar({ [`eventos/${id}`]: { ...previo, id: undefined } });
+}
+
 // ---------- Listas ----------
 export function guardarLista(l) {
     const id = l.id || nuevoId();
