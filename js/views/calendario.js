@@ -82,7 +82,7 @@ function detalleDiaHTML(f, d) {
         ${x.pagos.length || x.gasto ? `<p class="lista-label">Dinero</p><section class="card"><div class="dinero">
             ${x.pagos.map(pagoHTML).join('')}
             ${x.gasto ? `<div class="dinero-pie ${x.pagos.length ? '' : 'solo'}"><span>Gastaste este día</span><b class="privado">${money(x.gasto)}</b></div>` : ''}</div></section>` : ''}
-        ${notas.length ? `<p class="lista-label">Registros</p><div class="notas-grid">${notas.map(notaCardHTML).join('')}</div>` : ''}
+        ${notas.length ? `<p class="lista-label">Notas</p><div class="notas-grid">${notas.map(notaCardHTML).join('')}</div>` : ''}
     </div>`;
 }
 

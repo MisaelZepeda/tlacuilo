@@ -1,4 +1,4 @@
-// Registros: notas, apuntes y transcripciones, con búsqueda, filtros y etiquetas.
+// Notas: notas, apuntes, transcripciones y listas, con búsqueda, filtros y etiquetas.
 
 import { sel } from '../core/store.js';
 import { on } from '../core/eventos.js';
@@ -11,7 +11,7 @@ import { hoyISO, diasEntre } from '../domain/fechas.js';
 const FILTROS = { todas: 'Todas', fijadas: 'Fijadas', lista: 'Listas', nota: 'Notas', apunte: 'Apuntes', transcripcion: 'Transcripciones' };
 const f = { tipo: 'todas', etiqueta: '', q: '' };
 
-export const titulo = () => ({ titulo: 'Registros' });
+export const titulo = () => ({ titulo: 'Notas' });
 export function alEntrar(params) { if (params.etiqueta !== undefined) f.etiqueta = params.etiqueta; }
 
 export function cuandoNota(n) {
@@ -46,7 +46,7 @@ export function notaCardHTML(n) {
 
 function listaHTML() {
     const notas = filtrarNotas(sel.notas(), f);
-    if (!sel.notas().length) return `<section class="card">${vacioTecoHTML('Tu primer registro', 'Guarda ideas, apuntes de clase o de juntas, o dicta y Teco lo transcribe.', 'contento')}</section>`;
+    if (!sel.notas().length) return `<section class="card">${vacioTecoHTML('Tu primera nota', 'Guarda ideas, apuntes de clase o de juntas, o dicta y Teco lo transcribe.', 'contento')}</section>`;
     if (!notas.length) return `<section class="card">${vacioTecoHTML('Sin resultados', 'Prueba con otra palabra o quita los filtros.', 'tranquilo')}</section>`;
     return `<div class="notas-grid">${notas.map(notaCardHTML).join('')}</div>`;
 }
@@ -58,7 +58,7 @@ export function render() {
             <a class="btn btn-soft" href="#/registro/nuevo?tipo=lista">${icon('check-circle')}Lista</a>
             <a class="btn btn-soft" href="#/registro/nuevo?tipo=transcripcion&dictar=1">${icon('sparkle')}Dictar</a>
         </div>
-        <div class="search" style="margin-bottom:10px;"><span>${icon('search')}</span><input type="search" placeholder="Buscar en tus registros" value="${escapeHtml(f.q)}" data-input="rBuscar" aria-label="Buscar registros"></div>
+        <div class="search" style="margin-bottom:10px;"><span>${icon('search')}</span><input type="search" placeholder="Buscar en tus notas" value="${escapeHtml(f.q)}" data-input="rBuscar" aria-label="Buscar notas"></div>
         <div class="chips chips-scroll" style="margin:0 -16px 8px;">${Object.entries(FILTROS).map(([k, n]) => `<button class="chip chip-sm ${f.tipo === k ? 'activo' : ''}" data-action="rTipo" data-v="${k}">${n}</button>`).join('')}</div>
         ${etiquetas.length ? `<div class="chips chips-scroll" style="margin:0 -16px 12px;">${etiquetas.slice(0, 20).map(e => `<button class="chip chip-sm chip-outline ${f.etiqueta === e ? 'activo' : ''}" data-action="rEtiqueta" data-v="${escapeHtml(e)}">#${escapeHtml(e)}</button>`).join('')}</div>` : ''}
         <div id="r-lista">${listaHTML()}</div>`;

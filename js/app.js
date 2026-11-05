@@ -35,7 +35,7 @@ const NAV = [
     ['#/hoy', 'sunrise', 'Hoy', ['/hoy']],
     ['#/pendientes', 'check-circle', 'Pendientes', ['/pendientes']],
     ['#/calendario', 'calendar', 'Calendario', ['/calendario']],
-    ['#/registros', 'note', 'Registros', ['/registros', '/registro']],
+    ['#/registros', 'note', 'Notas', ['/registros', '/registro']],
 ];
 const AJUSTES = ['#/ajustes', 'settings', 'Ajustes', ['/ajustes']];
 

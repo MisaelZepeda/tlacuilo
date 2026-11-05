@@ -1,4 +1,4 @@
-// Editor de un registro: título, texto que se guarda solo, tipo, fijar,
+// Editor de una nota: título, texto que se guarda solo, tipo, fijar,
 // etiquetas (#así), dictado por voz y listas con casillas que se tachan.
 
 import { sel } from '../core/store.js';
@@ -14,7 +14,7 @@ import { cuandoNota } from './registros.js';
 let ed = null;        // { id, nuevo, tipo, items (solo listas), timer }
 let detener = null;   // detiene el dictado en curso
 
-export const titulo = () => ({ titulo: ed?.nuevo ? 'Nuevo registro' : 'Registro', atras: '#/registros' });
+export const titulo = () => ({ titulo: ed?.nuevo ? 'Nueva nota' : 'Nota', atras: '#/registros' });
 
 // Mientras el editor está abierto no se repinta con cada guardado (se perdería el cursor).
 export const conservar = () => !!ed && !!(document.getElementById('reg-texto') || document.getElementById('reg-lista'));
@@ -41,7 +41,7 @@ export function render({ id }) {
         <div class="editor-barra">
             <div class="seg editor-tipos">${Object.entries(TIPOS_NOTA).map(([k, x]) => `<button class="${ed.tipo === k ? 'activo' : ''}" data-action="regTipo" data-v="${k}">${x.nombre}</button>`).join('')}</div>
             <button class="icon-btn ${n.fijada ? 'activo-pin' : ''}" data-action="regFijar" aria-label="${n.fijada ? 'Quitar de fijadas' : 'Fijar arriba'}" title="${n.fijada ? 'Quitar de fijadas' : 'Fijar arriba'}">${icon('star')}</button>
-            ${sel.nota(ed.id) ? `<button class="icon-btn" data-action="regBorrarNota" aria-label="Borrar registro">${icon('trash')}</button>` : ''}
+            ${sel.nota(ed.id) ? `<button class="icon-btn" data-action="regBorrarNota" aria-label="Borrar nota">${icon('trash')}</button>` : ''}
         </div>
         <input id="reg-titulo" class="editor-titulo" placeholder="${esLista() ? 'Nombre de la lista' : 'Título (opcional)'}" value="${escapeHtml(n.titulo || '')}" data-input="regEscribir" autocomplete="off" aria-label="Título">
         ${esLista()
@@ -231,13 +231,13 @@ on('regFijar', async (el) => {
     toast(fijada ? 'Fijado arriba' : 'Quitado de fijadas');
 });
 on('regBorrarNota', async () => {
-    if (!(await confirmar({ titulo: 'Borrar registro', texto: 'Se borra este registro.', aceptar: 'Borrar', peligro: true }))) return;
+    if (!(await confirmar({ titulo: 'Borrar nota', texto: 'Se borra esta nota.', aceptar: 'Borrar', peligro: true }))) return;
     const id = ed.id;
     detener?.(); detener = null;
     ed = null;
     const deshacer = await borrarNota(id);
     location.hash = '#/registros';
-    toast('Registro borrado', { deshacer });
+    toast('Nota borrada', { deshacer });
 });
 
 on('regDictar', (el) => {

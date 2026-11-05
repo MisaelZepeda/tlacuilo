@@ -103,7 +103,7 @@ export function abrirNuevo({ fecha } = {}) {
         html: `<div class="nuevo-opciones">
             <button class="nuevo-opcion" data-action="nuevoTipo" data-t="tarea" data-f="${fecha || ''}"><span class="mas-ico">${icon('check-circle')}</span><span><b>Pendiente</b><small>Algo que tienes que hacer</small></span></button>
             <button class="nuevo-opcion" data-action="nuevoTipo" data-t="evento" data-f="${fecha || ''}"><span class="mas-ico">${icon('calendar')}</span><span><b>Evento</b><small>Cita, junta o algo con fecha y hora</small></span></button>
-            <button class="nuevo-opcion" data-action="nuevoTipo" data-t="registro"><span class="mas-ico">${icon('note')}</span><span><b>Registro</b><small>Nota, apunte o dictado</small></span></button>
+            <button class="nuevo-opcion" data-action="nuevoTipo" data-t="registro"><span class="mas-ico">${icon('note')}</span><span><b>Nota</b><small>Texto, lista, apunte o dictado</small></span></button>
         </div>`,
     });
 }
