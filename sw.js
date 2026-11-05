@@ -1,6 +1,6 @@
 // Service worker de Tlacuilo: la app funciona sin conexión con la versión instalada
 // y avisa cuando hay una nueva (SKIP_WAITING desde la app).
-const CACHE_NAME = 'tlacuilo-cache-v5'; // v5: fase 4: avisos y Siri
+const CACHE_NAME = 'tlacuilo-cache-v6'; // v6: calendario: solo el total del gasto por dia
 
 const urlsToCache = [
     './',

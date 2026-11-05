@@ -250,3 +250,4 @@
 .aviso-estado .icon { width: 18px; height: 18px; }
 .botones-fila { display: flex; gap: 8px; flex-wrap: wrap; }
 .siri ol.pasos[start] { margin-top: 4px; }
+.dinero-pie.solo { margin-top: 0; padding-top: 0; border-top: 0; }

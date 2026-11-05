@@ -35,13 +35,13 @@ function datos(desde, hasta) {
     const tareas = c.capas.pendientes ? sel.tareas().filter(t => t.fecha && t.fecha >= desde && t.fecha <= hasta) : [];
     const dinero = (c.capas.pagos || c.capas.gastos) ? dineroEnRango(sel.v4(), desde, hasta) : {};
     const porDia = {};
-    const dia = (f) => porDia[f] || (porDia[f] = { eventos: [], tareas: [], pagos: [], gasto: 0, movimientos: [] });
+    const dia = (f) => porDia[f] || (porDia[f] = { eventos: [], tareas: [], pagos: [], gasto: 0 });
     eventos.forEach(e => dia(e.fecha).eventos.push(e));
     tareas.forEach(t => dia(t.fecha).tareas.push(t));
     Object.entries(dinero).forEach(([f, d]) => {
         const x = dia(f);
         if (c.capas.pagos) x.pagos = d.pagos;
-        if (c.capas.gastos) { x.gasto = d.gasto; x.movimientos = d.movimientos; }
+        if (c.capas.gastos) x.gasto = d.gasto;
     });
     return { porDia, nivel: nivelesGasto(dinero) };
 }
@@ -69,27 +69,19 @@ function pagoHTML(p) {
         ${p.monto != null ? `<span class="num privado">${money(p.monto)}</span>` : ''}</div>`;
 }
 
-function movimientoHTML(t) {
-    const signo = t.tipo === 'ingreso' ? '+' : t.tipo === 'gasto' ? '−' : '';
-    const sub = t.tipo === 'transferencia' ? 'Transferencia' : t.paraTercero ? `Para ${t.paraTercero}` : t.abonoDe ? `Abono de ${t.abonoDe}` : (t.categoriaId || '').charAt(0).toUpperCase() + (t.categoriaId || '').slice(1);
-    return `<div class="dinero-fila"><div class="fila-ico ${t.tipo === 'ingreso' ? 'tono-pos' : ''}">${icon(t.tipo === 'ingreso' ? 'coin' : t.tipo === 'transferencia' ? 'repeat' : 'tag')}</div>
-        <div class="fila-body"><div class="fila-titulo">${escapeHtml(t.desc || (t.tipo === 'ingreso' ? 'Ingreso' : 'Gasto'))}</div><div class="fila-sub">${escapeHtml(sub)}</div></div>
-        <span class="num privado ${t.tipo === 'ingreso' ? 'pos' : ''}">${signo}${money(Number(t.monto) || 0)}</span></div>`;
-}
-
 // Todo lo de un día (debajo del mes, en la vista Día y al tocar un día de la semana).
 function detalleDiaHTML(f, d) {
-    const x = d || { eventos: [], tareas: [], pagos: [], gasto: 0, movimientos: [] };
+    const x = d || { eventos: [], tareas: [], pagos: [], gasto: 0 };
     const notas = notasDelDia(sel.notas(), f);
-    const vacio = !x.eventos.length && !x.tareas.length && !x.pagos.length && !x.movimientos.length && !notas.length;
+    const vacio = !x.eventos.length && !x.tareas.length && !x.pagos.length && !x.gasto && !notas.length;
     return `<div class="dia-detalle">
         <div class="seccion-head"><h2>${escapeHtml(nombreDia(f))}</h2><button class="link" data-action="calNuevo" data-f="${f}">${icon('plus')}Agregar</button></div>
         ${vacio ? `<section class="card">${vacioTecoHTML('Día libre', 'Nada programado. Toca Agregar para anotar un pendiente o un evento.', 'tranquilo')}</section>` : ''}
         ${x.eventos.length ? `<section class="card eventos-dia">${x.eventos.map(eventoHTML).join('')}</section>` : ''}
         ${x.tareas.length ? `<p class="lista-label">Pendientes</p><section class="card card-flush"><div class="lista-tareas">${x.tareas.map(t => tareaHTML(t, { mostrarFecha: false })).join('')}</div></section>` : ''}
-        ${x.pagos.length || x.movimientos.length ? `<p class="lista-label">Dinero</p><section class="card"><div class="dinero">
-            ${x.pagos.map(pagoHTML).join('')}${x.movimientos.map(movimientoHTML).join('')}
-            ${x.gasto ? `<div class="dinero-pie"><span>Gastaste este día</span><b class="privado">${money(x.gasto)}</b></div>` : ''}</div></section>` : ''}
+        ${x.pagos.length || x.gasto ? `<p class="lista-label">Dinero</p><section class="card"><div class="dinero">
+            ${x.pagos.map(pagoHTML).join('')}
+            ${x.gasto ? `<div class="dinero-pie ${x.pagos.length ? '' : 'solo'}"><span>Gastaste este día</span><b class="privado">${money(x.gasto)}</b></div>` : ''}</div></section>` : ''}
         ${notas.length ? `<p class="lista-label">Registros</p><div class="notas-grid">${notas.map(notaCardHTML).join('')}</div>` : ''}
     </div>`;
 }
